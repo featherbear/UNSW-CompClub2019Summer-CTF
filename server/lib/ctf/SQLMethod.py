@@ -83,7 +83,8 @@ class SQLMethod:
     class categories:
         @staticmethod
         def getCategories():
-            return database.fetchAll(SQLQuery.categories.getAll)
+            categories = database.fetchAll(SQLQuery.categories.getAll)
+            return { pair[0]: pair[1] for pair in categories }
 
         @staticmethod
         def createCategory(name: str):
