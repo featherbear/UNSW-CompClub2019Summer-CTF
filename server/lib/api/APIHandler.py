@@ -59,3 +59,5 @@ class APIHandler(tornado.web.RequestHandler):
 
     get = _generateRequestMethodHandler("GET")
     post = _generateRequestMethodHandler("POST")
+    put = _generateRequestMethodHandler("PUT")
+    delete = _generateRequestMethodHandler("DELETE")
