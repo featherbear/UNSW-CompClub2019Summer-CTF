@@ -3,8 +3,7 @@ import tornado.web
 from time import time
 from tornado.escape import json_decode
 
-from ..auth import UserSession
-from ..authSession import getSession, updateSession
+# from ..authSession import getSession, updateSession
 
 
 routes = {}
@@ -47,15 +46,15 @@ def _generateRequestMethodHandler(method):
 
 
 class APIHandler(tornado.web.RequestHandler):
-    def get_current_user(self):
-        try:
-            print(self)
-            token = self.get_secure_cookie("session").decode()
-            user, expiry = getSession(token)
-            if int(time()) < expiry:
-                return UserSession(user)
-        except Exception:
-            return False
+    # def get_current_user(self):
+    #     try:
+    #         print(self)
+    #         token = self.get_secure_cookie("session").decode()
+    #         user, expiry = getSession(token)
+    #         if int(time()) < expiry:
+    #             return UserSession(user)
+    #     except Exception:
+    #         return False
 
     get = _generateRequestMethodHandler("GET")
     post = _generateRequestMethodHandler("POST")
