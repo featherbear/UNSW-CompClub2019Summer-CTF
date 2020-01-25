@@ -12,7 +12,7 @@ ERROR_MESSAGE_DUPLICATE = "A question exists with the same flag"
 @routing.GET("/questions.json")
 @authenticated
 def questions(self: RequestHandler, args: dict):
-    self.finish(JSON.data(ctfSQLMethod.questions.getQuestions()))
+    self.finish(JSON.DATA(ctfSQLMethod.questions.getQuestions()))
 
 
 @routing.POST("/question")
