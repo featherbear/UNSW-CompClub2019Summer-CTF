@@ -76,7 +76,7 @@ class SQLQuery:
               INSERT
               INTO ctf_question_categories (name)
               VALUES (?)
-              """,
+              """
         delete = "DELETE FROM ctf_question_categories WHERE id = ?"
         edit = """
             UPDATE ctf_question_categories
