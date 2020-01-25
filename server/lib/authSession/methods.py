@@ -2,6 +2,26 @@ from hashlib import sha1
 from time import time
 
 from .SQLMethod import SQLMethod
+from ..JSON import JSON
+
+
+def authenticated(function):
+    def decorator(self, *args, **kwargs):
+        try:
+            auth_header = self.request.headers.get("Authorization")
+            canary, token = auth_header.split(" ", 1)
+
+            # Remedial checking
+            if canary != "Bearer":
+                raise Exception()
+
+        except:
+            self.set_status(403)
+            self.finish(JSON.error("Not Authenticated"))
+        else:
+            function(self, *args, **kwargs)
+
+    return decorator
 
 
 def createSession(user: int):
