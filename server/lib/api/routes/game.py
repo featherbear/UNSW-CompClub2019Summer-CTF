@@ -5,20 +5,9 @@ from ...ctf import SQLMethod as ctfSQLMethod
 from ...auth import SQLMethod as authSQLMethod
 from sqlite3 import IntegrityError
 
+from ...authSession.methods import authenticated
 
-@routing.POST("/ctf/questions.json")
-@authenticated
-def questions(self: RequestHandler, args: dict):
-    self.finish(JSON.data(ctfSQLMethod.questions.getQuestions()))
-
-
-@routing.POST("/ctf/categories.json")
-@authenticated
-def categories(self: RequestHandler, args: dict):
-    self.finish(JSON.data(ctfSQLMethod.categories.getCategories()))
-
-
-@routing.POST("/ctf/leaderboard.json")
+@routing.GET("/leaderboard.json")
 def leaderboard(self: RequestHandler, args: dict):
     questionsSQL = ctfSQLMethod.questions.getQuestions()
     solvesSQL = ctfSQLMethod.questions.getSolves()
@@ -38,13 +27,8 @@ def leaderboard(self: RequestHandler, args: dict):
             leaderboard[solve[0]]["points"] += pointsMap[solve[1]]
         except:
             pass
-    return self.finish(JSON.data(leaderboard))
 
-
-@routing.POST("/ctf/adminSolves.json")
-@authenticated
-def userSolves(self: RequestHandler, args: dict):
-    return self.finish(JSON.data(ctfSQLMethod.questions.getSolves()))
+    return self.finish(JSON.DATA(leaderboard))
 
 
 @routing.POST("/ctf/userSolves.json")

@@ -22,7 +22,7 @@ if database.conn is not None:
     import lib.authSession
 
     lib.authSession.initDatabase()
-    lib.authSession.cleanup()
+    # lib.authSession.cleanup()
 
     import lib.ctf
 

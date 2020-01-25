@@ -1,6 +1,6 @@
 from .SQLMethod import SQLMethod
 from .SQLQuery import SQLQuery
-from .methods import createSession, getSession, updateSession, cleanup
+from .methods import createSession
 
 
 def initDatabase():

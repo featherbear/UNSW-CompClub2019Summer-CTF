@@ -4,28 +4,44 @@ from ..config import config
 
 
 def authenticate(username, password):
-    if config["ADMIN"]["username"] == username and config["ADMIN"]["password"] == password:
-        return 0, "Admin"
-    else:
-        if SQLMethod.checkPassword(username, password):
-            return SQLMethod.getUser(username)
-    return None
+    username = username.strip().lower()
+    password = password.strip()
+
+    adminUsername = config["ADMIN"].get("username", "").lower()
+    adminPassword = config["ADMIN"].get("password")
+
+    if len(username) == 0:
+        return None
+
+    if adminUsername == username and adminPassword == password:
+        # Admin is UID 0
+        return 0
+
+    return SQLMethod.checkPassword(username, password)
+
 
 
 def passwordHash(password: str, salt: str = None):
     import hashlib
     import os
-    _salt = salt if salt else os.urandom(16)
+
+    _salt = salt or os.urandom(16)
+    
     hash = hashlib.pbkdf2_hmac('sha256', password.encode(), _salt, 1)
     return hash if salt else (hash, _salt)
 
 
 def createUser(username: str, password: str, name: str):
-    if username == config["ADMIN"].get("username", "admin"):
+    username = username.strip().lower()
+    
+    if len(username) == 0:
+        return False
+
+    if username == config["ADMIN"].get("username", "").lower():
         return False
 
     hash, salt = passwordHash(password)
-    return SQLMethod.createUser(username, name, hash, salt)
+    return SQLMethod.createUser(username, name.strip(), hash, salt)
 
 
 def changePassword(user: id, password: str):

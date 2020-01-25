@@ -7,7 +7,7 @@ from .. import database
 class SQLMethod:
     @staticmethod
     def createUser(username: str, name: str, hash: str, salt: str):
-        return database.insert(SQLQuery.add, (username, name, hash, salt))
+        return database.insert(SQLQuery.add, (username.lower(), name, hash, salt))
 
     @staticmethod
     def deleteUser(user: int):
@@ -23,7 +23,7 @@ class SQLMethod:
 
     @staticmethod
     def checkPassword(username: str, password: str):
-        return database.fetchOne(SQLQuery.passwordCheck, (username, password))
+        return database.fetchOne(SQLQuery.passwordCheck, (username.lower(), password))
 
     @staticmethod
     def getUser(user: Union[str, int]):
