@@ -90,9 +90,15 @@ class SQLMethod:
             return database.insert(SQLQuery.categories.add, (name,))
 
         @staticmethod
-        def editCategory(catId: int, name: str):
-            return database.insert(SQLQuery.categories.edit, (name, catId))
+        def editCategory(id: int, name: str):
+            return database.update(SQLQuery.categories.edit, (name, id))
 
         @staticmethod
-        def deleteCategory(catId: int):
-            return database.insert(SQLQuery.categories.delete, (catId,))
+        def deleteCategory(id: int):
+            result = database.update(SQLQuery.categories.delete, (id,))
+
+            if result:
+                database.update(SQLQuery.categories.resetCategoriesFromID, (id,))
+                return True
+
+            return False

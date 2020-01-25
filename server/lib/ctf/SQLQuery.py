@@ -84,3 +84,8 @@ class SQLQuery:
             WHERE id = ?
             """
         getAll = "SELECT id, name FROM ctf_question_categories"
+        resetCategoriesFromID = """
+            UPDATE ctf_questions
+            SET category = 0
+            WHERE category = ?
+            """
