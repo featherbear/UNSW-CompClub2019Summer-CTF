@@ -9,6 +9,7 @@ from sqlite3 import IntegrityError
 
 ERROR_MESSAGE_DUPLICATE = "A question exists with the same flag"
 
+
 @routing.GET("/questions.json")
 @authenticated
 def questions(self: RequestHandler, args: dict):
@@ -47,6 +48,7 @@ def questionEdit(self: RequestHandler, args: dict):
 
     return self.finish(JSON.FALSE())
 
+
 @routing.DELETE("/question")
 @authenticated
 @authorised
@@ -55,4 +57,15 @@ def questionDelete(self: RequestHandler, args: dict):
 
     if result:
         return self.finish(JSON.TRUE())
+    return self.finish(JSON.FALSE())
+
+
+@routing.POST("/question/getFlag")
+@authenticated
+@authorised
+def questionGetFlag(self: RequestHandler, args: dict):
+    result = ctfSQLMethod.questions.getFlag(**args)
+
+    if result:
+        return self.finish(JSON.DATA(result))
     return self.finish(JSON.FALSE())

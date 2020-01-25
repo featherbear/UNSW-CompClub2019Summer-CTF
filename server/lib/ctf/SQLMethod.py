@@ -54,7 +54,10 @@ class SQLMethod:
         # Helper functions
         @staticmethod
         def getFlag(question: int):
-            return database.fetchOne(SQLQuery.questions.getFlag, (question,))[0]
+            result = database.fetchOne(SQLQuery.questions.getFlag, (question,))
+            if result:
+                return result[0]
+            return None
 
         @staticmethod
         def getSolves(*, user: int = None, question: int = None):
