@@ -7,6 +7,7 @@ from ...auth import SQLMethod as authSQLMethod
 
 from sqlite3 import IntegrityError
 
+ERROR_MESSAGE_DUPLICATE = "A question exists with the same flag"
 
 @routing.GET("/questions.json")
 @authenticated
@@ -21,7 +22,7 @@ def questionSubmit(self: RequestHandler, args: dict):
     try:
         result = ctfSQLMethod.questions.createQuestion(**args)
     except IntegrityError:
-        return self.finish(JSON.ERROR("A question exists with the same flag"))
+        return self.finish(JSON.ERROR(ERROR_MESSAGE_DUPLICATE))
 
     if result:
         return self.finish(JSON.DATA(dict(id=result)))
@@ -37,7 +38,7 @@ def questionEdit(self: RequestHandler, args: dict):
         try:
             result = ctfSQLMethod.questions.editQuestionFlag(**args)
         except IntegrityError:
-            return self.finish(JSON.ERROR("A question exists with the same flag"))
+            return self.finish(JSON.ERROR(ERROR_MESSAGE_DUPLICATE))
     else:
         result = ctfSQLMethod.questions.editQuestion(**args)
 
