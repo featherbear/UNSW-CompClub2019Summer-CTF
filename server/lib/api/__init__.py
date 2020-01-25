@@ -1,2 +1,3 @@
-from .APIHandler import APIHandler, JSON, routing
+from .APIHandler import APIHandler, routing
+from ..JSON import JSON
 from . import routes

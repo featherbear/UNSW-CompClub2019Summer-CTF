@@ -11,7 +11,7 @@ except:
     __VERSION = "UNKNOWN"
 
 app = tornado.web.Application([
-    ("/api/v1/(.*)", APIHandler)
+    ("/api/v2/(.*)", APIHandler)
 ])
 
 if database.conn is not None:

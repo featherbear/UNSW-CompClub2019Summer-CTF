@@ -1,62 +1,55 @@
 import re
 import tornado.web
 from time import time
-from tornado.escape import json_decode, json_encode
+from tornado.escape import json_decode
 
 from ..auth import UserSession
 from ..authSession import getSession, updateSession
 
 
-class JSON:
-    @staticmethod
-    def error(error: str):
-        return json_encode(dict(status=False, error=error))
+routes = {}
 
-    @staticmethod
-    def data(data):
-        return json_encode(dict(status=True, data=data))
 
-    @staticmethod
-    def TRUE():
-        return json_encode(dict(status=True))
+def _generateMethodDecorator(method):
+    if method not in routes:
+        routes[method] = {}
 
-    YES = OK = TRUE
+    def function(urlRegex):
+        def wrapper(func):
+            if urlRegex in routes[method]:
+                raise Exception("Duplicate routing pattern: " + urlRegex)
+            routes[method][urlRegex] = func
+            return func
 
-    @staticmethod
-    def FALSE():
-        return json_encode(dict(status=False))
-
-    NO = FALSE
+        return wrapper
+    return function
 
 
 class routing:
-    _routesPOST = {}
-    _routesGET = {}
+    GET = _generateMethodDecorator("GET")
+    POST = _generateMethodDecorator("POST")
+    PUT = _generateMethodDecorator("PUT")
+    DELETE = _generateMethodDecorator("DELETE")
 
-    @staticmethod
-    def GET(urlRegex):
-        def wrapper(func):
-            if urlRegex in routing._routesGET:
-                raise Exception("Duplicate routing pattern: " + urlRegex)
-            routing._routesGET[urlRegex] = func
-            return func
 
-        return wrapper
-
-    @staticmethod
-    def POST(urlRegex):
-        def wrapper(func):
-            if urlRegex in routing._routesPOST:
-                raise Exception("Duplicate routing pattern: " + urlRegex)
-            routing._routesPOST[urlRegex] = func
-            return func
-
-        return wrapper
+def _generateRequestMethodHandler(method):
+    def function(self, path, **kwargs):
+        try:
+            args = json_decode(self.request.body or "{}")
+        except:
+            return self.finish(JSON.error("bad arguments"))
+        for urlRegex, function in routes[method].items():
+            urlRoute = re.fullmatch(urlRegex, "/" + path)
+            if urlRoute:
+                return function(self, *urlRoute.groups(), args=args, **kwargs)
+        return self.finish(JSON.error("no route here"))
+    return function
 
 
 class APIHandler(tornado.web.RequestHandler):
     def get_current_user(self):
         try:
+            print(self)
             token = self.get_secure_cookie("session").decode()
             user, expiry = getSession(token)
             if int(time()) < expiry:
@@ -64,25 +57,5 @@ class APIHandler(tornado.web.RequestHandler):
         except Exception:
             return False
 
-    def get(self, path, **kwargs):
-        try:
-            args = json_decode(self.request.body or "{}")
-        except:
-            return self.finish(JSON.error("bad arguments"))
-        for urlRegex, function in routing._routesGET.items():
-            urlRoute = re.fullmatch(urlRegex, "/" + path)
-            if urlRoute:
-                return function(self, *urlRoute.groups(), args=args, **kwargs)
-        return self.finish(JSON.error("no route here"))
-
-    def post(self, path, **kwargs):
-        try:
-            args = json_decode(self.request.body or "{}")
-        except:
-            return self.finish(JSON.error("bad arguments"))
-
-        for urlRegex, function in routing._routesPOST.items():
-            urlRoute = re.fullmatch(urlRegex, "/" + path)
-            if urlRoute:
-                return function(self, *urlRoute.groups(), args=args, **kwargs)
-        return self.finish(JSON.error("no route here"))
+    get = _generateRequestMethodHandler("GET")
+    post = _generateRequestMethodHandler("POST")
