@@ -5,7 +5,6 @@ from .. import JSON, routing
 from ...auth import SQLMethod as authSQLMethod, Tools as authTools, User
 from ...authSession import createSession
 from ...config import config
-from ...site import SSE_messages
 from tornado.web import authenticated
 
 

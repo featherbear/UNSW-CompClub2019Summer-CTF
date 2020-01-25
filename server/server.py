@@ -1,24 +1,14 @@
-__VERSION = "0.0.3"
-# github.com/featherbear/UNSW-CompClub2019Summer-CTF
-
-# print("TODO")
-# print("- Concurrent SQLCursors")
-
-import tornado.ioloop
-import tornado.web
-
-from lib import database
 from lib.api import APIHandler
-from lib.site import SSEHandler, SSE_messages, SiteHandler
+from lib import database
+import tornado.web
+import tornado.ioloop
+
+__VERSION = "0.0.3"
+
 
 app = tornado.web.Application([
-    ("/api/v1/(.*)", APIHandler),
-    ("/orchestrator", SSEHandler),
-    ("/(.*)", SiteHandler),
-],
-    cookie_secret="5206677",
-    login_url="/invite"
-)
+    ("/api/v1/(.*)", APIHandler)
+])
 
 if database.conn is not None:
     import lib.auth
@@ -73,15 +63,13 @@ def run(file: str = None, **kwargs):
         print(":: os.fork not present on system (Windows) - Defaulting to single process")
         server.start(1)
 
-    print("Server running on port %s\n" % port)
-    SSE_messages.addMessage("The game server is online!")
-    SSE_messages.do.reloadSite()
-
     tornado.ioloop.IOLoop.current().start()
 
 
 if __name__ == "__main__":
     run()
+    print("Server running on port %s\n" % port)
+
 else:
     import asyncio
     from tornado.platform.asyncio import AnyThreadEventLoopPolicy

@@ -4,7 +4,6 @@ from tornado.web import authenticated, RequestHandler
 from ...ctf import SQLMethod as ctfSQLMethod
 from ...auth import SQLMethod as authSQLMethod
 from sqlite3 import IntegrityError
-from ...site import SSE_messages
 
 
 @routing.POST("/ctf/questions.json")

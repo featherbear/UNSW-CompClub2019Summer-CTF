@@ -54,4 +54,4 @@ def update(*args, commit=True, **kwargs):
     return c.rowcount
 
 
-conn = create_connection(config["SERVER"].get("database", "database.sqlite3"))
+conn = create_connection(config["SERVER"].get("database"))
