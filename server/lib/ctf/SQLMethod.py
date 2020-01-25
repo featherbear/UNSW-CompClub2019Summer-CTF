@@ -2,8 +2,9 @@ from .SQLQuery import SQLQuery
 from .. import database
 
 
-def assertSQLResult(result):
+def assertSQLResult(*result):
     result = all(result)
+
     if result:
         database.conn.commit()
     else:
@@ -37,22 +38,18 @@ class SQLMethod:
 
         @staticmethod
         def deleteQuestion(question: int):
-            result = []
-            result.append(database.update(
-                SQLQuery.questions.delete, (question,), commit=False))
-            result.append(database.update(
-                SQLQuery.solves.deleteQuestion, (question,), commit=False))
-
-            return assertSQLResult(result)
+            result = database.update(SQLQuery.questions.delete, (question,))
+            if result:
+                database.update(SQLQuery.solves.deleteQuestion, (question,))
+                return True
+            return False
 
         @staticmethod
         def deleteUser(user: int):
             return database.update(SQLQuery.solves.deleteUser, (user,))
 
-        # result = []
-        # result.append(database.update(UserSQL.delete, (user,), commit=False))
-        # result.append(database.update(SQLQuery.solves.deleteUser, (user,), commit=False))
-        # return assertSQLResult(result)
+        # return assertSQLResult(database.update(UserSQL.delete, (user,), commit=False),
+        #                        database.update(SQLQuery.solves.deleteUser, (user,), commit=False))
 
         # Helper functions
         @staticmethod
