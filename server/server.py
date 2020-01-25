@@ -3,8 +3,12 @@ from lib import database
 import tornado.web
 import tornado.ioloop
 
-__VERSION = "0.0.3"
-
+try:
+    import git
+    repo = git.Repo(search_parent_directories=True)
+    __VERSION = repo.head.object.hexsha[:7]
+except:
+    __VERSION = "UNKNOWN"
 
 app = tornado.web.Application([
     ("/api/v1/(.*)", APIHandler)
@@ -29,10 +33,12 @@ else:
 
 
 def run(file: str = None, **kwargs):
-    print("UNSW CSE CompClub 2019 Summer CTF Server")
-    print("                      [ by Andrew Wong ]")
-    print("----------------------------------------")
-    print("Server version:", __VERSION)
+    print("==============================")
+    print("= CTF Service by Andrew Wong =")
+    print("=                            =")
+    print(f"=            version {__VERSION} =")
+    print("==============================")
+    print()
 
     if file:
         print("Loading config file:", file)
@@ -43,9 +49,8 @@ def run(file: str = None, **kwargs):
         from lib.config import config
 
     if kwargs:
-        print("Applying config overrides")
+        print("Applying configuration overrides")
         config.update(kwargs)
-    print("----------------------------------------")
 
     server = tornado.httpserver.HTTPServer(app)
 
@@ -56,19 +61,27 @@ def run(file: str = None, **kwargs):
         print("Port", port, "is in use!\nAborting...")
         return
 
+    print("Starting server on port %s\n" % port)
+
     try:
+        # TODO: Check if behaviour happens on Windows
+        
+        # Try to import fork, if an exception is raised, then the OS does not have os.fork
         from os import fork
+
+
         server.start(0)
     except:
         print(":: os.fork not present on system (Windows) - Defaulting to single process")
         server.start(1)
+
+    
 
     tornado.ioloop.IOLoop.current().start()
 
 
 if __name__ == "__main__":
     run()
-    print("Server running on port %s\n" % port)
 
 else:
     import asyncio
