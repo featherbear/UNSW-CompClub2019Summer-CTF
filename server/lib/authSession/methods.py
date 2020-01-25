@@ -9,48 +9,24 @@ from ..config import config
 from tornado.web import RequestHandler
 
 
-def validateAuthHeader(req: RequestHandler) -> str:
-    auth_header = req.request.headers.get("Authorization")
-    canary, token = auth_header.split(" ", 1)
-
-    # Remedial checking
-    if canary != "Bearer":
-        raise Exception()
-
-    return token
-
-
 def authenticated(function):
     def decorator(self, *args, **kwargs):
-        try:
-            token = validateAuthHeader(self)
-            if not SQLMethod.getSession(token):
-                raise Exception()
-            claim = jwt.decode(token,
-                               config["SERVER"]["secret"],
-                               algorithms=['HS256']
-                               )
-            print(claim)
-        except:
+        if self.current_user:
+            function(self, *args, **kwargs)
+        else:
             self.set_status(403)
             self.finish(JSON.ERROR("Not Authenticated"))
-        else:
-            function(self, *args, **kwargs)
 
     return decorator
 
 
 def authorised(function):
     def decorator(self, *args, **kwargs):
-        try:
-            token = validateAuthHeader(self)
-            if token != "admin":
-                raise Exception()
-        except:
+        if self.current_user and self.current_user["id"] == 0:
+            function(self, *args, **kwargs)
+        else:
             self.set_status(403)
             self.finish(JSON.ERROR("Not Authorised"))
-        else:
-            function(self, *args, **kwargs)
 
     return decorator
 
@@ -73,10 +49,10 @@ def createSession(user: int):
 #     return not not SQLMethod.updateSession(token, int(time()) + 120 * 60)
 
 
-# def getSession(token: str):
-#     if not token:
-#         return False
-#     return SQLMethod.getSession(token)
+def getSession(token: str):
+    if not token:
+        return False
+    return SQLMethod.getSession(token)
 
 
 # def cleanup():

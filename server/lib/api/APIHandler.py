@@ -3,7 +3,8 @@ import tornado.web
 from time import time
 from tornado.escape import json_decode
 
-# from ..authSession import getSession, updateSession
+from ..config import config
+from ..authSession import getSession, jwt
 
 
 routes = {}
@@ -46,15 +47,25 @@ def _generateRequestMethodHandler(method):
 
 
 class APIHandler(tornado.web.RequestHandler):
-    # def get_current_user(self):
-    #     try:
-    #         print(self)
-    #         token = self.get_secure_cookie("session").decode()
-    #         user, expiry = getSession(token)
-    #         if int(time()) < expiry:
-    #             return UserSession(user)
-    #     except Exception:
-    #         return False
+    def get_current_user(self):
+        try:
+            auth_header = self.request.headers.get("Authorization")
+            canary, token = auth_header.split(" ", 1)
+
+            # Remedial checking
+            if canary != "Bearer":
+                raise Exception()
+
+            if not getSession(token):
+                raise Exception()
+
+            # TODO: Generate secret in the sqlite3 file
+            return jwt.decode(token,
+                               config["SERVER"]["secret"],
+                               algorithms=['HS256']
+                               )            
+        except:
+            return False
 
     get = _generateRequestMethodHandler("GET")
     post = _generateRequestMethodHandler("POST")
