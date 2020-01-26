@@ -17,7 +17,6 @@ def questions(self: RequestHandler, args: dict):
 
 
 @routing.POST("/question")
-@authenticated
 @authorised
 def questionSubmit(self: RequestHandler, args: dict):
     try:
@@ -32,7 +31,6 @@ def questionSubmit(self: RequestHandler, args: dict):
 
 
 @routing.PUT("/question")
-@authenticated
 @authorised
 def questionEdit(self: RequestHandler, args: dict):
     if "flag" in args:
@@ -50,7 +48,6 @@ def questionEdit(self: RequestHandler, args: dict):
 
 
 @routing.DELETE("/question")
-@authenticated
 @authorised
 def questionDelete(self: RequestHandler, args: dict):
     result = ctfSQLMethod.questions.deleteQuestion(**args)
@@ -61,7 +58,6 @@ def questionDelete(self: RequestHandler, args: dict):
 
 
 @routing.POST("/question/getFlag")
-@authenticated
 @authorised
 def questionGetFlag(self: RequestHandler, args: dict):
     result = ctfSQLMethod.questions.getFlag(**args)

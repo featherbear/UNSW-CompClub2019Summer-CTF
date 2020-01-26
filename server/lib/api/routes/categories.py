@@ -15,7 +15,6 @@ def categories(self: RequestHandler, args: dict):
     self.finish(JSON.DATA(ctfSQLMethod.categories.getCategories()))
 
 @routing.POST("/category")
-@authenticated
 @authorised
 def categorySubmit(self: RequestHandler, args: dict):
     try:
@@ -30,7 +29,6 @@ def categorySubmit(self: RequestHandler, args: dict):
 
 
 @routing.PUT("/category")
-@authenticated
 @authorised
 def categoryEdit(self: RequestHandler, args: dict):
     try:
@@ -44,7 +42,6 @@ def categoryEdit(self: RequestHandler, args: dict):
     return self.finish(JSON.FALSE())
 
 @routing.DELETE("/category")
-@authenticated
 @authorised
 def categoryDelete(self: RequestHandler, args: dict):
     result = ctfSQLMethod.categories.deleteCategory(**args)
