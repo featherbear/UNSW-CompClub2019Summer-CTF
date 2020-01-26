@@ -48,9 +48,6 @@ class SQLMethod:
         def deleteUser(user: int):
             return database.update(SQLQuery.solves.deleteUser, (user,))
 
-        # return assertSQLResult(database.update(UserSQL.delete, (user,), commit=False),
-        #                        database.update(SQLQuery.solves.deleteUser, (user,), commit=False))
-
         # Helper functions
         @staticmethod
         def getFlag(question: int):
