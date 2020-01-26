@@ -3,6 +3,7 @@ import tornado.web
 from time import time
 from tornado.escape import json_decode
 
+from ..JSON import JSON
 from ..config import config
 from ..authSession import getSession, jwt
 
@@ -37,12 +38,12 @@ def _generateRequestMethodHandler(method):
         try:
             args = json_decode(self.request.body or "{}")
         except:
-            return self.finish(JSON.error("bad arguments"))
+            return self.finish(JSON.ERROR("Malformed"))
         for urlRegex, function in routes[method].items():
             urlRoute = re.fullmatch(urlRegex, "/" + path)
             if urlRoute:
                 return function(self, *urlRoute.groups(), args=args, **kwargs)
-        return self.finish(JSON.error("no route here"))
+        return self.finish(JSON.ERROR("No route here"))
     return function
 
 
@@ -60,10 +61,12 @@ class APIHandler(tornado.web.RequestHandler):
                 raise Exception()
 
             # TODO: Generate secret in the sqlite3 file
-            return jwt.decode(token,
-                               config["SERVER"]["secret"],
-                               algorithms=['HS256']
-                               )            
+            data = jwt.decode(token,
+                              config["SERVER"]["secret"],
+                              algorithms='HS256'
+                              )
+            data["token"] = token
+            return data
         except:
             return False
 

@@ -1,3 +1,4 @@
+from os import urandom
 import jwt
 from hashlib import sha1
 from time import time
@@ -8,13 +9,15 @@ from ..config import config
 
 from tornado.web import RequestHandler
 
+from datetime import datetime, timedelta
+
 
 def authenticated(function):
     def decorator(self, *args, **kwargs):
         if self.current_user:
             function(self, *args, **kwargs)
         else:
-            self.set_status(403)
+            self.set_status(401)
             self.finish(JSON.ERROR("Not Authenticated"))
 
     return decorator
@@ -30,17 +33,21 @@ def authorised(function):
 
     return decorator
 
+import random, string
+def randomChars(length):
+    return ''.join(random.SystemRandom().choice(string.ascii_uppercase + string.digits) for _ in range(length))
 
 def createSession(user: int):
     token = jwt.encode(
-        dict(id=user),
-        config["SERVER"].get("secret", "we_have_top_men_working_on_it"),
+        dict(id=user,
+             exp=datetime.utcnow() + timedelta(days=1),
+             rng=randomChars(5)
+             ),
+        config["SERVER"].get("secret"),
         algorithm='HS256'
     ).decode()
 
     SQLMethod.newSession(user, token)
-
-    print("New token:", token)
 
     return token
 
