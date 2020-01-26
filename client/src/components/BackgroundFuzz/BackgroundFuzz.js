@@ -25,6 +25,11 @@ export default function (resource, container) {
     antialias: false,
     canvas: canvas
   })
+
+  // Tell Firefox to be quiet
+  // https://github.com/mrdoob/three.js/issues/9716
+  renderer.context.getShaderInfoLog = function () { return '' };
+  
   const renderBack1 = new THREE.WebGLRenderTarget(
     document.body.clientWidth,
     window.innerHeight
