@@ -1,11 +1,11 @@
 import tornado.httputil
 import tornado.web
 
-from .. import JSON, routing
-from ...auth import SQLMethod as authSQLMethod, Tools as authTools
-from ...authSession import createSession
+from .. import routing, JSON
+from ...auth import methods as authTools
+from ...authSession import methods as sessionTools, authenticated, authorised
 from ...config import config
-from tornado.web import authenticated
+from sqlite3 import IntegrityError
 
 
 @routing.POST("/auth/login")
@@ -15,44 +15,113 @@ def login(self: tornado.web.RequestHandler, args: dict):
     if "username" in args and "password" in args:
         uid = authTools.authenticate(args["username"], args["password"])
         if uid is not None:
-            return self.finish(JSON.DATA(dict(token=createSession(uid))))
-            
+            return self.finish(JSON.DATA(dict(token=sessionTools.createSession(uid))))
+
         return self.finish(JSON.ERROR("Invalid username or password"))
     return self.finish(JSON.FALSE())
 
 
-# @routing.POST("/auth/register")
-# def register(self: tornado.web.RequestHandler, args: dict):
-#     self.request: tornado.httputil.HTTPServerRequest
-#     if "name" and "username" and "password" in args:
-#         uid=authTools.createUser(
-#             args["username"], args["password"], args["name"])
-#         if uid is not None:
-#             token=createSession(uid)
-#             self.set_secure_cookie('session', token)
-#             SSE_messages.addMessage(User(uid).name + " has joined the game")
+@routing.POST("/auth/logout")
+@authenticated
+def logout(self: tornado.web.RequestHandler, args: dict):
+    self.request: tornado.httputil.HTTPServerRequest
 
-#             return self.finish(JSON.OK())
-#         return self.finish(JSON.error("something went wrong"))
-#     return self.finish(JSON.error("bad arguments"))
+    sessionTools.deleteSession(token=self.current_user["token"])
+
+    return self.finish(JSON.TRUE())
+
+@routing.GET("/auth")
+@authorised
+def getUsers(self: tornado.web.RequestHandler, args: dict):
+    return self.finish(JSON.DATA(authTools.getUsers()))
+
+@routing.PUT("/auth")
+@authenticated
+def changePassword(self: tornado.web.RequestHandler, args: dict):
+    self.request: tornado.httputil.HTTPServerRequest
+
+    newPassword = args["password"]
+
+    isAdmin = self.current_user["id"] == 0
+    targetId = args.get("id", self.current_user["id"])
+
+    isChangingSelf = targetId == self.current_user["id"]
+
+    if isChangingSelf and isAdmin:
+        self.set_status(400)
+        self.finish(JSON.ERROR("Admin password can only be modified locally"))
+        return
+
+    if not isChangingSelf and not isAdmin:
+        self.set_status(403)
+        self.finish(JSON.ERROR("Not Authorised"))
+        return
+
+    result = authTools.changePassword(targetId, newPassword)
+
+    if not result:
+        self.finish(JSON.ERROR("User does not exist"))
+        return
+
+    sessionTools.deleteSession(user=targetId)
+
+    if isChangingSelf:
+        sessionTools.forceAddSession(targetId, self.current_user["token"])
+
+    return self.finish(JSON.TRUE())
+
+@routing.POST("/auth")
+def register(self: tornado.web.RequestHandler, args: dict):
+    if self.current_user:
+        return self.finish(JSON.ERROR("User already authenticated"))
+
+    self.request: tornado.httputil.HTTPServerRequest
+
+    username = args["username"]
+    password = args["password"]
+    name = args["name"]
+
+    try:
+        uid = authTools.createUser(username, password, name)
+    except IntegrityError:
+        return self.finish(JSON.ERROR("Username taken"))
+
+    if uid is not None:
+        return self.finish(JSON.DATA(dict(token=sessionTools.createSession(uid))))
+
+    return self.finish(JSON.ERROR("Something went wrong"))
 
 
-# @routing.POST("/auth/usernameAvailable")
-# def register(self: tornado.web.RequestHandler, args: dict):
-#     self.request: tornado.httputil.HTTPServerRequest
-#     if "username" in args:
-#         if args["username"] != config["ADMIN"].get("username", "admin") and not authSQLMethod.getUser(args["username"]):
-#             return self.finish(JSON.OK())
-#         return self.finish(JSON.FALSE())
-#     return self.finish(JSON.error("bad arguments"))
+from ...ctf import SQLMethod as CTFtools
 
+@routing.DELETE("/auth")
+@authorised
+def delete(self: tornado.web.RequestHandler, args: dict):
+    self.request: tornado.httputil.HTTPServerRequest
 
-# @routing.POST("/auth/me")
-# @authenticated
-# def login(self: tornado.web.RequestHandler, args: dict):
-#     self.request: tornado.httputil.HTTPServerRequest
-#     return self.finish(JSON.data(dict(
-#         id=self.current_user.id,
-#         name=self.current_user.name,
-#         username=self.current_user.username
-#     )))
+    user = args["id"]
+
+    result = authTools.deleteUser(user)
+
+    if not result:
+        self.finish(JSON.ERROR("User does not exist"))
+        return
+
+    sessionTools.deleteSession(user=user)
+    CTFtools.questions.deleteUser(user)
+
+    self.finish(JSON.TRUE())
+
+@routing.POST("/auth/usernameAvailable")
+def usernameAvailable(self: tornado.web.RequestHandler, args: dict):
+    self.request: tornado.httputil.HTTPServerRequest
+
+    username = args["username"].strip().lower()
+
+    if len(username) == 0:
+        return self.finish(JSON.FALSE())
+
+    if username != config["ADMIN"].get("username", "admin") and not authTools.getUser(args["username"]):
+        return self.finish(JSON.TRUE())
+
+    return self.finish(JSON.FALSE())

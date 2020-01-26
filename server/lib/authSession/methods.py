@@ -47,20 +47,20 @@ def createSession(user: int):
         algorithm='HS256'
     ).decode()
 
-    SQLMethod.newSession(user, token)
+    forceAddSession(user, token)
 
     return token
 
+def forceAddSession(user, token):
+    return SQLMethod.newSession(user, token)
 
-# def updateSession(token: str):
-#     return not not SQLMethod.updateSession(token, int(time()) + 120 * 60)
-
+def deleteSession(*, user: int = None, token: str = None):
+    return SQLMethod.deleteSession(user=user, token=token)
 
 def getSession(token: str):
     if not token:
         return False
     return SQLMethod.getSession(token)
-
 
 # def cleanup():
 #     return SQLMethod.cleanup()

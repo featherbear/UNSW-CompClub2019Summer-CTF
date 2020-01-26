@@ -17,7 +17,7 @@ class SQLQuery:
         VALUES (?, ?, ?, ?)
         """
 
-    delete = "DELETE FROM users WHERE username = ?"
+    delete = "DELETE FROM users WHERE id = ?"
 
     changeName = """
         UPDATE users

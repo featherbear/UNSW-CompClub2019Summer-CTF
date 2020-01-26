@@ -1,4 +1,4 @@
-from . import Tools
+from .methods import *
 from .SQLMethod import SQLMethod
 from .SQLQuery import SQLQuery
 
