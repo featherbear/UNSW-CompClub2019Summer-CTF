@@ -19,6 +19,9 @@ def questions(self: RequestHandler, args: dict):
 @routing.POST("/question")
 @authorised
 def questionSubmit(self: RequestHandler, args: dict):
+    if not ctfSQLMethod.categories.getCategory(args["category"]):
+        return self.finish(JSON.FALSE())
+
     try:
         result = ctfSQLMethod.questions.createQuestion(**args)
     except IntegrityError:
@@ -39,6 +42,9 @@ def questionEdit(self: RequestHandler, args: dict):
         except IntegrityError:
             return self.finish(JSON.ERROR(ERROR_MESSAGE_DUPLICATE))
     else:
+        if "category" in args and not ctfSQLMethod.categories.getCategory(args["category"]):
+            return self.finish(JSON.FALSE())
+        
         result = ctfSQLMethod.questions.editQuestion(**args)
 
     if result:

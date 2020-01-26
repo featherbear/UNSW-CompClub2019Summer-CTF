@@ -83,6 +83,7 @@ class SQLQuery:
             SET name = ?
             WHERE id = ?
             """
+        getOne = "SELECT id, name FROM ctf_question_categories WHERE id = ?"
         getAll = "SELECT id, name FROM ctf_question_categories"
         resetCategoriesFromID = """
             UPDATE ctf_questions

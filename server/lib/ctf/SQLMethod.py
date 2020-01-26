@@ -82,9 +82,13 @@ class SQLMethod:
 
     class categories:
         @staticmethod
+        def getCategory(id):
+            return database.fetchOne(SQLQuery.categories.getOne, (id,))
+
+        @staticmethod
         def getCategories():
             categories = database.fetchAll(SQLQuery.categories.getAll)
-            return { pair[0]: pair[1] for pair in categories }
+            return {pair[0]: pair[1] for pair in categories}
 
         @staticmethod
         def createCategory(name: str):
@@ -99,7 +103,8 @@ class SQLMethod:
             result = database.update(SQLQuery.categories.delete, (id,))
 
             if result:
-                database.update(SQLQuery.categories.resetCategoriesFromID, (id,))
+                database.update(
+                    SQLQuery.categories.resetCategoriesFromID, (id,))
                 return True
 
             return False
