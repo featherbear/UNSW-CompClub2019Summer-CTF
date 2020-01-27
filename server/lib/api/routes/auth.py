@@ -1,3 +1,4 @@
+from ...ctf import SQLMethod as CTFtools
 import tornado.httputil
 import tornado.web
 
@@ -30,10 +31,12 @@ def logout(self: tornado.web.RequestHandler, args: dict):
 
     return self.finish(JSON.TRUE())
 
+
 @routing.GET("/auth")
 @authorised
 def getUsers(self: tornado.web.RequestHandler, args: dict):
     return self.finish(JSON.DATA(authTools.getUsers()))
+
 
 @routing.PUT("/auth")
 @authenticated
@@ -70,6 +73,7 @@ def changePassword(self: tornado.web.RequestHandler, args: dict):
 
     return self.finish(JSON.TRUE())
 
+
 @routing.POST("/auth")
 def register(self: tornado.web.RequestHandler, args: dict):
     if self.current_user:
@@ -92,8 +96,6 @@ def register(self: tornado.web.RequestHandler, args: dict):
     return self.finish(JSON.ERROR("Something went wrong"))
 
 
-from ...ctf import SQLMethod as CTFtools
-
 @routing.DELETE("/auth")
 @authorised
 def delete(self: tornado.web.RequestHandler, args: dict):
@@ -112,6 +114,7 @@ def delete(self: tornado.web.RequestHandler, args: dict):
 
     self.finish(JSON.TRUE())
 
+
 @routing.POST("/auth/usernameAvailable")
 def usernameAvailable(self: tornado.web.RequestHandler, args: dict):
     self.request: tornado.httputil.HTTPServerRequest
@@ -125,3 +128,8 @@ def usernameAvailable(self: tornado.web.RequestHandler, args: dict):
         return self.finish(JSON.TRUE())
 
     return self.finish(JSON.FALSE())
+
+
+@routing.POST("/auth/validate")
+def tokenValid(self: tornado.web.RequestHandler, args: dict):
+    return self.finish(JSON.TRUE() if self.current_user else JSON.FALSE())

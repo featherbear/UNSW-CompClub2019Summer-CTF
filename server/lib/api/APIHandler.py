@@ -38,11 +38,13 @@ def _generateRequestMethodHandler(method):
         try:
             args = json_decode(self.request.body or "{}")
         except:
+            self.set_status(400)
             return self.finish(JSON.ERROR("Malformed"))
         for urlRegex, function in routes[method].items():
             urlRoute = re.fullmatch(urlRegex, "/" + path)
             if urlRoute:
                 return function(self, *urlRoute.groups(), args=args, **kwargs)
+        self.set_status(404)
         return self.finish(JSON.ERROR("No route here"))
     return function
 
