@@ -8,12 +8,15 @@ export async function get (req, res, next) {
 export async function post (req, res, next) {
   let resp = await call(LOGIN, undefined, req.body)
 
-  if (resp.status) {
-    res.cookie('token', resp.data.token)
-    res.redirect('/')
+  if (!resp.status) {
+    res.statusCode = 401
     res.end()
+    return
   }
 
-  res.statusCode = 400
+  res.cookie('token', resp.data.token, {
+    path: "/"
+  })
+  res.statusCode = 200
   res.end()
 }
