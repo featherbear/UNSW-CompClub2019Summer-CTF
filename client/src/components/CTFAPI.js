@@ -6,7 +6,7 @@ const BASE_URL = `${ADDRESS}/api/${API_VERSION}/`
 const fetch = require('node-fetch')
 
 const call = function (endpoint, token, data) {
-  return callManual(endpoint[1], endpoint[0], token, data).then(r => r.json())
+  return callManual(endpoint[1], endpoint[0], token, data)
 }
 
 const callManual = function (endpoint, method, token, data = {}) {

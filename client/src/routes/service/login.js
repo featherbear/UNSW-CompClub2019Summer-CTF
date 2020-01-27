@@ -6,7 +6,7 @@ export async function get (req, res, next) {
 }
 
 export async function post (req, res, next) {
-  let resp = await call(LOGIN, undefined, req.body)
+  let resp = await call(LOGIN, undefined, req.body).then(r => r.json())
 
   if (!resp.status) {
     res.statusCode = 401
@@ -15,7 +15,7 @@ export async function post (req, res, next) {
   }
 
   res.cookie('token', resp.data.token, {
-    path: "/"
+    path: '/'
   })
   res.statusCode = 200
   res.end()

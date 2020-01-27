@@ -6,7 +6,7 @@ export async function get (req, res, next) {
 }
 
 export async function post (req, res, next) {
-  let resp = await call(CREATE_USER, undefined, req.body)
+  let resp = await call(CREATE_USER, undefined, req.body).then(r => r.json())
 
   if (!resp.status) {
     res.statusCode = 400
