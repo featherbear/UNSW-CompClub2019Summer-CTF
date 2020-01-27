@@ -1,8 +1,26 @@
 <script>
   import BackgroundFuzz from "../components/BackgroundFuzz/BackgroundFuzz.svelte";
+
+  import { Invite, Auth, Login, Register } from "../components/Invite";
+
+  function login() {}
+
+  let currentPage = "";
+  import { onMount } from "svelte";
+  onMount(() => {
+    let anchor = location.hash.substr(1);
+    currentPage =
+      ["invite", "auth", "login", "register"].indexOf(anchor) > -1
+        ? anchor
+        : "invite";
+  });
 </script>
 
 <style>
+  main {
+    text-align: center;
+  }
+
   .background {
     position: fixed;
     left: 0;
@@ -24,6 +42,17 @@
   }
 </style>
 
+<main>
+  {#if currentPage == 'invite'}
+    <Invite bind:currentPage />
+  {:else if currentPage == 'auth'}
+    <Auth bind:currentPage />
+  {:else if currentPage == 'register'}
+    <Register />
+  {:else if currentPage == 'login'}
+    <Login />
+  {/if}
+</main>
 
 <div class="background">
   <BackgroundFuzz resource="invite/background.jpg" />
