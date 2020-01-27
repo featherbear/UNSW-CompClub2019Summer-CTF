@@ -1,53 +1,145 @@
 <script>
   import { fade } from "svelte/transition";
+
+  let displayName, username, password, password2;
+
+  let currentPage = "name";
+
+  let salutation = "";
+  $: {
+    var hour = new Date().getHours();
+
+    if (hour < 12) {
+      salutation = "morning";
+    } else if (hour < 18) {
+      salutation = "afternoon";
+    } else {
+      salutation = "evening";
+    }
+  }
+
+  let formElem;
+  function nameHandler(evt) {
+    if (evt.keyCode == 9 || evt.keyCode == 13) {
+      evt.preventDefault();
+      if (evt.target.value.trim() == "") return;
+      currentPage = "username";
+    }
+  }
+
+  function usernameHandler(evt) {
+    if (evt.keyCode == 9 || evt.keyCode == 13) {
+      evt.preventDefault();
+      if (evt.target.value.trim() == "") return;
+      // TODO: Check if username is available
+      currentPage = "password";
+    }
+  }
+
+  let passwordEntered = false;
+  function passwordHandler(evt) {
+    if (evt.keyCode == 9 || evt.keyCode == 13) {
+      evt.preventDefault();
+      // No trim for passwords
+      if (evt.target.value == "") return;
+      passwordEntered = true;
+    }
+  }
+
+  function password2Handler(evt) {
+    if (evt.keyCode == 13) {
+      evt.preventDefault();
+      if (password == password) {
+        submit();
+      }
+    }
+  }
+
+  async function submit() {
+    let data = {
+      name: displayName.trim(),
+      username: username.trim(),
+      password
+    };
+    if (!data.name) return;
+    if (!data.username) return;
+
+    let result = await fetch("/service/register", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (result.status == 200) {
+      window.location = "/";
+    }
+  }
 </script>
 
 <section class="section" transition:fade={{ delay: 400 }}>
-  <form>
-    <div class="page" name="name">
-      <h1 class="is-size-1 has-text-light">
-        Good
-        <span class="salutation" />
-        , Agent
+  <form bind:this={formElem}>
+    {#if currentPage == 'name'}
+      <div transition:fade={{ delay: 400 }}>
+        <h1 class="is-size-1 has-text-light">
+          Good {salutation}, Agent
+          <input
+            type="text"
+            name="name"
+            class="has-text-light minimal"
+            spellcheck="false"
+            placeholder="(your display name)"
+            maxlength="20"
+            on:keydown={nameHandler}
+            bind:value={displayName} />
+          .
+        </h1>
+      </div>
+    {:else if currentPage == 'username'}
+      <div
+        transition:fade={{ delay: 400 }}
+        on:introstart={evt => evt.target.querySelector('input').focus()}>
+        <h1 class="is-size-1 has-text-light">
+          Username:
+          <input
+            type="text"
+            name="username"
+            class="has-text-light minimal"
+            spellcheck="false"
+            pattern="\w."
+            maxlength="20"
+            placeholder="(your username)"
+            on:keydown={usernameHandler}
+            bind:value={username} />
+        </h1>
+      </div>
+    {:else if currentPage == 'password'}
+      <div
+        transition:fade={{ delay: 400 }}
+        on:introstart={evt => evt.target.querySelector('input').focus()}>
+        <h1 class="is-size-1 has-text-light">password</h1>
         <input
-          type="text"
-          name="name"
-          class="has-text-light minimal"
-          spellcheck="false"
-          required
-          placeholder="(your display name)"
-          maxlength="20" />
-        .
-      </h1>
-    </div>
-    <div class="page" name="username">
-      <h1 class="is-size-1 has-text-light">
-        Username:
-        <input
-          type="text"
-          name="username"
-          class="has-text-light minimal"
-          spellcheck="false"
-          pattern="\w."
-          maxlength="20"
-          placeholder="(your username)" />
-      </h1>
-    </div>
+          class="input blueBox has-text-centered is-size-1 has-text-light"
+          name="password"
+          type="password"
+          on:keydown={passwordHandler}
+          bind:value={password} />
 
-    <div class="page" name="password">
-      <h1 class="is-size-1 has-text-light">password</h1>
-      <input
-        class="input blueBox has-text-centered is-size-1 has-text-light"
-        name="password"
-        type="password" />
-    </div>
-
-    <div class="page" name="password2">
-      <h1 class="is-size-1 has-text-light">confirm</h1>
-      <input
-        class="input blueBox has-text-centered is-size-1 has-text-light"
-        name="password2"
-        type="password" />
-    </div>
+        {#if passwordEntered}
+          <div
+            transition:fade
+            on:introstart={evt => evt.target.querySelector('input').focus()}>
+            <h1 class="is-size-1 has-text-light">confirm</h1>
+            <input
+              class="input blueBox has-text-centered is-size-1 has-text-light"
+              name="password2"
+              type="password"
+              on:keydown={password2Handler}
+              bind:value={password2} />
+          </div>
+        {/if}
+      </div>
+    {/if}
   </form>
 </section>
