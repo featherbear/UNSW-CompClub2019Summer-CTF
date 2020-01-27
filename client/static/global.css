@@ -85,3 +85,11 @@ form .button:hover,
 .placeholder-center-text::placeholder {
   text-align: center;
 }
+
+input.minimal {
+    background-color: transparent;
+    outline: none;
+    border: none;
+    border-bottom: 5px solid white;
+    padding: 15px;
+  }

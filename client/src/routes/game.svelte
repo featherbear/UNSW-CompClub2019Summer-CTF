@@ -1,29 +1,21 @@
 <script context="module">
-  import CTF from "../components/CTFAPI.js";
-
   export async function preload(page, session) {
     const questionsFn = () =>
-      this.fetch(CTF.GET.URL_GET_QUESTIONS, {
+      this.fetch("/service/questions.json", {
         credentials: "include"
       })
         .then(r => r.json())
         .then(json => json.data);
 
     const categoriesFn = () =>
-      this.fetch(CTF.GET.URL_GET_CATEGORIES, {
+      this.fetch("/service/categories.json", {
         credentials: "include"
       })
         .then(r => r.json())
-        .then(json => {
-          let categories = {};
-          for (let [id, name] of json.data) {
-            categories[id] = name;
-          }
-          return categories;
-        });
+        .then(json => json.data);
 
     const solvesFn = () =>
-      this.fetch(CTF.GET.URL_GET_SOLVES, {
+      this.fetch("/service/solves.json", {
         credentials: "include"
       })
         .then(r => r.json())
@@ -43,23 +35,23 @@
   import Slot from "../components/_layout.svelte";
   import QuestionCard from "../components/QuestionCard.svelte";
 
-export let questions;
-export let categories;
-// export let solves;
+  export let questions;
+  export let categories;
+  export let solves;
 
   let mergeData = [];
   $: {
-    mergeData = questions.map(q => {
-      let [id, title, description, points, categoryID] = q;
+    mergeData = questions.map(question => {
+      let [id, title, description, points, categoryID] = question;
       return {
         id,
         title,
         description,
         points,
         categoryID,
-        categoryName: categories[categoryID],
-        solves: -1
-      }
+        categoryName: categories[categoryID] || "",
+        solves: solves[id]
+      };
     });
   }
 </script>
