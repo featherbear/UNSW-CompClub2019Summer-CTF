@@ -1,5 +1,12 @@
 <script context="module">
   export async function preload(page, session) {
+    let validation = await this.fetch("/service/validate", {
+      credentials: "include"
+    });
+    if (validation.status == 401) {
+      return this.redirect(302, "/invite");
+    }
+
     const questionsFn = () =>
       this.fetch("/service/questions.json", {
         credentials: "include"

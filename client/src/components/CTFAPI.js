@@ -42,6 +42,7 @@ module.exports = {
   DELETE_USER: ['DELETE', craftURL('auth')],
   LOGIN: ['POST', craftURL('auth/login')],
   LOGOUT: ['POST', craftURL('auth/logout')],
+  VALIDATE_LOGIN: ["POST", craftURL('auth/validate')],
   USERNAME_AVAILABE: ['POST', craftURL('auth/usernameAvailable')],
   CHANGE_PASSWORD: ['PUT', craftURL('auth')],
   // CHANGE_DISPLAY_NAME: ["PUT", craftURL("auth")],
