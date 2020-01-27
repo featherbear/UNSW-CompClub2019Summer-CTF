@@ -10,7 +10,9 @@ import cookierParser from 'cookie-parser'
 const { PORT, NODE_ENV } = process.env
 const dev = NODE_ENV === 'development'
 
-import "./components/ServerResponse-CookiePolyfill"
+import './components/ServerResponse-CookiePolyfill'
+import './components/ServerResponse-RedirectPolyfill'
+
 import jwt_decode from 'jwt-decode'
 
 polka()
