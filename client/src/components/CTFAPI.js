@@ -1,21 +1,37 @@
 const ADDRESS = 'http://localhost:8000'
 const API_VERSION = 'v2'
 
+const BASE_URL = `${ADDRESS}/api/${API_VERSION}/`
+
 const fetch = require('node-fetch')
 
-const call = function (endpoint, data = {}) {
-  return fetch(endpoint[1], {
-    method: endpoint[0],
-    body: JSON.stringify(data)
-  }).then(r => r.json())
+const call = function (endpoint, token, data) {
+  return callManual(endpoint[1], endpoint[0], token, data).then(r => r.json())
+}
+
+const callManual = function (endpoint, method, token, data = {}) {
+  return fetch(endpoint, {
+    method: method,
+    body: Object.keys(data).length ? JSON.stringify(data) : undefined,
+    headers: token
+      ? {
+          Authorization: `Bearer ${token}`
+        }
+      : undefined
+  })
 }
 
 const craftURL = function (endpoint) {
-  return `${ADDRESS}/api/${API_VERSION}/${endpoint}`
+  return `${BASE_URL}${endpoint}`
 }
 
 module.exports = {
+  ADDRESS,
+  API_VERSION,
+  BASE_URL,
+
   call,
+  callManual,
 
   SOLVE_QUESTION: ['POST', craftURL('question/solve')],
   GET_SCORES: ['GET', craftURL('scores.json')],
