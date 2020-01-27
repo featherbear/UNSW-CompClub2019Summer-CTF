@@ -14,11 +14,25 @@
     if (session.id != 0) {
       return this.error(403, "Not admin!");
     }
+
+    //
+
+    let gameData = await this.fetch("/service/data.json", {
+      credentials: "include"
+    }).then(r => r.json());
+
+    return { gameData };
   }
 </script>
 
 <script>
   import Slot from "../components/_layout.svelte";
+  export let gameData;
 </script>
 
-<Slot />
+<Slot>
+  <!--
+  {#each gameData as data}
+  {/each} 
+  -->
+</Slot>
