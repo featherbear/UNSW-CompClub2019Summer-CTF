@@ -27,11 +27,11 @@ polka()
 
         try {
           data = jwt_decode(req.cookies.token)
-
+          data.token = req.cookies.token
+          
           if (data.exp < Date.now() / 1000) {
             data = null
           }
-
         } catch (e) {
           data = null
         }
