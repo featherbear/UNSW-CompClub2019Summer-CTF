@@ -9,9 +9,15 @@
 
     ///
 
+    // if (session.id == 0) {
+    //   return this.redirect(302, "/game");
+    // }
+
+    //
+
     let gameData = await this.fetch("/service/data.json", {
       credentials: "include"
-    });
+    }).then(r => r.json());
 
     return { gameData };
   }
@@ -22,6 +28,7 @@
   import QuestionCard from "../components/QuestionCard.svelte";
 
   export let gameData;
+  console.log(gameData);
 </script>
 
 <Slot>
