@@ -11,6 +11,7 @@ const { PORT, NODE_ENV } = process.env
 const dev = NODE_ENV === 'development'
 
 import "./components/ServerResponse-CookiePolyfill"
+import jwt_decode from 'jwt-decode'
 
 polka()
   .use(
@@ -18,7 +19,24 @@ polka()
     cookierParser(),
     compression({ threshold: 0 }),
     sirv('static', { dev }),
-    sapper.middleware()
+    sapper.middleware({
+      session: (req, res) => {
+        let data = null
+
+        try {
+          data = jwt_decode(req.cookies.token)
+
+          if (data.exp < Date.now() / 1000) {
+            data = null
+          }
+
+        } catch (e) {
+          data = null
+        }
+
+        return data
+      }
+    })
   )
   .listen(PORT, err => {
     if (err) console.log('error', err)
