@@ -7,9 +7,12 @@
   let loginUsernameEntered = false;
   function loginUsernameHandler(evt) {
     if (evt.keyCode == 9 || evt.keyCode == 13) {
-      evt.preventDefault();
+      if (evt.target.value.trim() == "") {
+        evt.preventDefault();
+        return;
+      }
+      if (!loginUsernameEntered || evt.keyCode == 13) evt.preventDefault();
       loginUsernameEntered = true;
-      focusOnInputElement(passwordElement);
     }
   }
 
@@ -18,11 +21,6 @@
       evt.preventDefault();
       submit();
     }
-  }
-
-  function focusOnInputElement(reference) {
-    if (!reference) return;
-    reference.focus();
   }
 
   async function submit() {
@@ -68,7 +66,7 @@
       <input
         bind:this={passwordElement}
         on:keydown={loginPasswordHandler}
-        use:focusOnInputElement
+        on:introstart={evt => evt.target.focus()}
         class="input blueBox has-text-centered is-size-1 has-text-light"
         name="password"
         type="password"

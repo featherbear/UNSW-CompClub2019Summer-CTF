@@ -3,8 +3,6 @@
 
   import { Invite, Auth, Login, Register } from "../components/Invite";
 
-  function login() {}
-
   let currentPage = "";
   import { onMount } from "svelte";
   onMount(() => {
