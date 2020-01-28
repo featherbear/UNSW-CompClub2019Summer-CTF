@@ -4,8 +4,8 @@
   export let description;
   export let points;
   export let solved;
-  export let categoryName;
   export let categoryID;
+  export let categoryName;
 
   let card;
 

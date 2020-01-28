@@ -17,7 +17,9 @@
   let flagValue = "";
   let submissionEnabled = true;
 
-  function submitFlag() {
+  // import CTF from "./CTFAPI.js";
+
+  async function submitFlag() {
     let value = flagValue.trim();
     if (!value) return;
 
@@ -27,6 +29,18 @@
 
     console.log("Submit " + flagValue);
 
+    let r = await fetch("/yass", {
+      // let r = await fetch(CTF.POST.URL_SOLVE_QUESTION, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ flag: "yes" }),
+      credentials: "include"
+    })
+      .then(r => r.json())
+      .then(json => json.data);
+    console.log(r);
     if (true) {
       // modal.querySelector("[name=flag]").placeholder = "flag correct";
 
@@ -37,8 +51,6 @@
       flagValue = "";
     }
   }
-
- 
 </script>
 
 <style>
@@ -64,12 +76,12 @@
     border: 2px solid rgba(22, 131, 155, 0.5);
   }
 
- .modal-card header,
+  .modal-card header,
   .modal-card footer {
     background-color: rgba(22, 131, 155, 0.5);
   }
 
-.modal-card section {
+  .modal-card section {
     background-color: rgba(11, 126, 152, 0.22);
     display: flex;
     flex-direction: column;

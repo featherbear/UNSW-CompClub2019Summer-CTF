@@ -82,10 +82,10 @@
   }
 </script>
 
-<section class="section" in:fade={{delay: 400}} out:fade>
+<section class="section" in:fade={{ delay: 400 }} out:fade>
   <form bind:this={formElem}>
     {#if currentPage == 'name'}
-      <div transition:fade={{ delay: 400 }}>
+      <div in:fade={{ delay: 400 }} out:fade>
         <h1 class="is-size-1 has-text-light">
           Good {salutation}, Agent
           <input
@@ -102,9 +102,7 @@
         </h1>
       </div>
     {:else if currentPage == 'username'}
-      <div
-        transition:fade={{ delay: 400 }}
-        on:introstart={evt => evt.target.querySelector('input').focus()}>
+      <div in:fade={{ delay: 400 }} out:fade>
         <h1 class="is-size-1 has-text-light">
           Username:
           <input
@@ -121,9 +119,7 @@
         </h1>
       </div>
     {:else if currentPage == 'password'}
-      <div
-        transition:fade={{ delay: 400 }}
-        on:introstart={evt => evt.target.querySelector('input').focus()}>
+      <div in:fade={{ delay: 400 }} out:fade>
         <h1 class="is-size-1 has-text-light">password</h1>
         <input
           class="input blueBox has-text-centered is-size-1 has-text-light"
@@ -134,9 +130,7 @@
           use:focusInputElement />
 
         {#if passwordEntered}
-          <div
-            transition:fade
-            on:introstart={evt => evt.target.querySelector('input').focus()}>
+          <div transition:fade>
             <h1 class="is-size-1 has-text-light">confirm</h1>
             <input
               class="input blueBox has-text-centered is-size-1 has-text-light"
