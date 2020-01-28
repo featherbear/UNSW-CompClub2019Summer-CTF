@@ -78,7 +78,7 @@
   }
 </script>
 
-<section class="section" transition:fade={{ delay: 400 }}>
+<section class="section" in:fade={{delay: 400}} out:fade>
   <form bind:this={formElem}>
     {#if currentPage == 'name'}
       <div transition:fade={{ delay: 400 }}>

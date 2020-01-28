@@ -49,7 +49,7 @@
   }
 </script>
 
-<section class="section" transition:fade={{ delay: 400 }}>
+<section class="section" in:fade={{delay: 400}} out:fade>
   <form autocomplete="off">
     <input
       bind:this={usernameElement}
