@@ -18,6 +18,17 @@
 <style>
   main {
     text-align: center;
+    padding: 32px 0;
+  }
+
+  .logoContainer {
+    width: 50%;
+    margin: 0 auto;
+    transition: margin-top 400ms ease-out;
+  }
+
+  .logoContainer.lowered {
+    margin-top: 12%;
   }
 
   .background {
@@ -39,16 +50,10 @@
     transition: all 1s;
     background-color: rgba(0, 35, 88, 0.7);
   }
-
-  .logoContainer {
-    width: 50%;
-    margin: 0 auto;
-    margin-top: 13%;
-  }
 </style>
 
 <main class="container is-widescreen">
-  <div class='logoContainer'>
+  <div class="logoContainer" class:lowered={currentPage == 'invite'}>
     <SVGLoader imageURL="/assets/img/compclub.logo.white.svg" />
   </div>
   {#if currentPage == 'invite'}
