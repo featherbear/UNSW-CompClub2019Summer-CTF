@@ -69,8 +69,15 @@ form .button {
 form .button:hover,
 .blueBox {
   background-color: rgba(22, 131, 155, 0.22) !important;
+
   border-color: rgba(11, 126, 152, 0.22) !important;
-  /*border-radius: 35px;*/
+  border: 1px solid transparent;
+  border-radius: 4px;
+
+  padding-bottom: calc(0.5em - 1px);
+  padding-left: calc(0.75em - 1px);
+  padding-right: calc(0.75em - 1px);
+  padding-top: calc(0.5em - 1px);
 }
 
 .blueBox:focus {
@@ -87,9 +94,9 @@ form .button:hover,
 }
 
 input.minimal {
-    background-color: transparent;
-    outline: none;
-    border: none;
-    border-bottom: 5px solid white;
-    padding: 15px;
-  }
+  background-color: transparent;
+  outline: none;
+  border: none;
+  border-bottom: 5px solid white;
+  padding: 15px;
+}

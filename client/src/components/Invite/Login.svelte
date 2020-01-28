@@ -15,7 +15,8 @@
         evt.preventDefault();
         return;
       }
-      if (!loginUsernameEntered || evt.keyCode == 13) evt.preventDefault();
+      
+      if (evt.keyCode != 9) focusInputElement(passwordElement);
       loginUsernameEntered = true;
     }
   }
@@ -61,7 +62,7 @@
       name="username"
       class="is-size-1 has-text-light minimal has-text-centered"
       spellcheck="false"
-      pattern="\w."
+      pattern="\w*"
       maxlength="20"
       placeholder="username"
       on:keydown={loginUsernameHandler}
@@ -72,7 +73,7 @@
         bind:this={passwordElement}
         on:keydown={loginPasswordHandler}
         on:introstart={evt => evt.target.focus()}
-        class="input blueBox has-text-centered is-size-1 has-text-light"
+        class="blueBox has-text-centered is-size-1 has-text-light"
         name="password"
         type="password"
         placeholder="password"

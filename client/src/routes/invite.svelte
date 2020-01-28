@@ -28,7 +28,7 @@
   }
 
   .logoContainer.lowered {
-    margin-top: 12%;
+    margin-top: 10%;
   }
 
   .background {
