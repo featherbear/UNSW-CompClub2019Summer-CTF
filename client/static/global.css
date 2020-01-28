@@ -82,6 +82,7 @@ form .button:hover,
 
 .blueBox:focus {
   box-shadow: none;
+  outline: none;
 }
 
 .blueBox::placeholder {
