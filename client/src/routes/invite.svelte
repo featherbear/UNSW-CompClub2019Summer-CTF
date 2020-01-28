@@ -2,6 +2,7 @@
   import BackgroundFuzz from "../components/BackgroundFuzz/BackgroundFuzz.svelte";
 
   import { Invite, Auth, Login, Register } from "../components/Invite";
+  import SVGLoader from "../components/SVGLoader.svelte";
 
   let currentPage = "";
   import { onMount } from "svelte";
@@ -38,9 +39,18 @@
     transition: all 1s;
     background-color: rgba(0, 35, 88, 0.7);
   }
+
+  .logoContainer {
+    width: 50%;
+    margin: 0 auto;
+    margin-top: 13%;
+  }
 </style>
 
-<main>
+<main class="container is-widescreen">
+  <div class='logoContainer'>
+    <SVGLoader imageURL="/assets/img/compclub.logo.white.svg" />
+  </div>
   {#if currentPage == 'invite'}
     <Invite bind:currentPage />
   {:else if currentPage == 'auth'}
