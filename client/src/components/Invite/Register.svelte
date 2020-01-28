@@ -110,7 +110,7 @@
             name="username"
             class="has-text-light minimal"
             spellcheck="false"
-            pattern="\w."
+            pattern="\w*"
             maxlength="20"
             placeholder="(your username)"
             on:keydown={usernameHandler}
