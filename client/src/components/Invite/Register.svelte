@@ -53,7 +53,7 @@
   function password2Handler(evt) {
     if (evt.keyCode == 13) {
       evt.preventDefault();
-      if (password == password) {
+      if (password == password2) {
         submit();
       }
     }
