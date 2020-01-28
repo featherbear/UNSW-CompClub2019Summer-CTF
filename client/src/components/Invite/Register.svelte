@@ -18,6 +18,10 @@
     }
   }
 
+  function focusInputElement(element) {
+    element && element.focus();
+  }
+
   let formElem;
   function nameHandler(evt) {
     if (evt.keyCode == 9 || evt.keyCode == 13) {
@@ -92,7 +96,8 @@
             placeholder="(your display name)"
             maxlength="20"
             on:keydown={nameHandler}
-            bind:value={displayName} />
+            bind:value={displayName}
+            use:focusInputElement />
           .
         </h1>
       </div>
@@ -111,7 +116,8 @@
             maxlength="20"
             placeholder="(your username)"
             on:keydown={usernameHandler}
-            bind:value={username} />
+            bind:value={username}
+            use:focusInputElement />
         </h1>
       </div>
     {:else if currentPage == 'password'}
@@ -124,7 +130,8 @@
           name="password"
           type="password"
           on:keydown={passwordHandler}
-          bind:value={password} />
+          bind:value={password}
+          use:focusInputElement />
 
         {#if passwordEntered}
           <div
@@ -136,7 +143,8 @@
               name="password2"
               type="password"
               on:keydown={password2Handler}
-              bind:value={password2} />
+              bind:value={password2}
+              use:focusInputElement />
           </div>
         {/if}
       </div>

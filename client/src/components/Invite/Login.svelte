@@ -4,6 +4,10 @@
   let usernameElement;
   let passwordElement;
 
+  function focusInputElement(element) {
+    element && element.focus();
+  }
+
   let loginUsernameEntered = false;
   function loginUsernameHandler(evt) {
     if (evt.keyCode == 9 || evt.keyCode == 13) {
@@ -49,7 +53,7 @@
   }
 </script>
 
-<section class="section" in:fade={{delay: 400}} out:fade>
+<section class="section" in:fade={{ delay: 400 }} out:fade>
   <form autocomplete="off">
     <input
       bind:this={usernameElement}
@@ -60,7 +64,8 @@
       pattern="\w."
       maxlength="20"
       placeholder="username"
-      on:keydown={loginUsernameHandler} />
+      on:keydown={loginUsernameHandler}
+      use:focusInputElement />
 
     {#if loginUsernameEntered}
       <input
@@ -71,7 +76,8 @@
         name="password"
         type="password"
         placeholder="password"
-        transition:fade />
+        transition:fade
+        use:focusInputElement />
     {/if}
   </form>
 </section>
