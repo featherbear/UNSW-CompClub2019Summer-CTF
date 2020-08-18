@@ -1,5 +1,5 @@
 # Project no longer (never was) maintained  
-### Please find the latest developments at [CTF2](https://github.com/featherbear/CTF2)
+### Please find the latest developments at [Project CTF²](https://github.com/featherbear/CTF2)
 ---
 
 
