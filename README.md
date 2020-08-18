@@ -1,3 +1,23 @@
+# Project no longer (never was) maintained  
+### Please find the latest developments at [CTF2](https://github.com/featherbear/CTF2)
+---
+
+
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+&nbsp;  
+
+
 # UNSW CompClub 2019 Summer CTF Server
 ---
 
@@ -67,7 +87,7 @@ Edit the SQLite entry for the user in the `users` table.
 
 ---
 ## License
-Copyright © 2018 - 2019 Andrew Wong  
+Copyright Â© 2018 - 2019 Andrew Wong  
 
 This software is licensed under the MIT License.  
 You are free to redistribute it and/or modify it under the terms of the license.  
